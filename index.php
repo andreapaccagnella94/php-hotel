@@ -1,3 +1,76 @@
+<?php             
+
+    $i = 0;
+
+    $hotels = [
+        [
+            'name' => 'Hotel Belvedere',
+            'description' => 'Hotel Belvedere Descrizione',
+            'parking' => true,
+            'vote' => 4,
+            'distance_to_center' => 10.4               
+        ],
+        [
+            'name' => 'Hotel Futuro',
+            'description' => 'Hotel Futuro Descrizione',
+            'parking' => true,
+            'vote' => 2,
+            'distance_to_center' => 2           
+        ],
+        [
+            'name' => 'Hotel Rivamare',
+            'description' => 'Hotel Rivamare Descrizione',
+            'parking' => false,
+            'vote' => 1,
+            'distance_to_center' => 1
+        ],
+        [
+            'name' => 'Hotel Bellavista',
+            'description' => 'Hotel Bellavista Descrizione',
+            'parking' => false,
+            'vote' => 5,
+            'distance_to_center' => 5.5
+        ],
+        [
+            'name' => 'Hotel Milano',
+            'description' => 'Hotel Milano Descrizione',
+            'parking' => true,
+            'vote' => 2,
+            'distance_to_center' => 50
+        ],
+    ];   
+    
+    // controllo filtro per parcheggio
+
+    // mi creo una variabile per capire se i parcheggi sono richiesti o meno
+    $parcking_requested = false;
+
+    /*   
+    if($_GET["parcking"] == "on"){
+        echo "parcheggi richiesti";
+    } 
+    */
+    // meglio con isset e operatore logico
+    if( isset($_GET["parcking"]) && $_GET["parcking"] == "on"){
+       // echo "parcheggi richiesti";
+       $parcking_requested = true;
+       
+    };
+
+    // controllo filtro per voto
+    // mi creo una variabile per dare un valore iniziale di voto
+    $minimun_vote = 0;
+
+    // meglio con isset e operatore logico
+    if( isset($_GET["minimumVoteHotel"]) && is_numeric($_GET["minimumVoteHotel"]) && $_GET["minimumVoteHotel"] > 0 && $_GET["minimumVoteHotel"] <= 5)  {
+       
+        // echo "voto minimo : " . $_GET["minimumVoteHotel"];
+       $minimun_vote = (int)$_GET["minimumVoteHotel"]; // (int) per far diventare la variabile un numero
+    };
+
+    var_dump($minimun_vote);
+                
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,106 +100,91 @@
     <main>
         <!-- Form -->
         <div id="fomr" class="container">
-            <div class="card m-3">
-                <div class="card-body">
-                    <h5 class="card-title">Find your best hotel</h5>
-                    <form>
-                        <div class="row g-3 m-3">
-                            <div class="col-8">
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                    <label class="form-check-label" for="exampleCheck1">Parcking</label>
+                    <h3 class="m-3">Find your best hotel</h3>
+                    <form action="" class="m-3">
+                        
+                            <div class="d-flex m-3">
+
+                                <div class="mb-3 form-control">
+                                    <input type="checkbox" class="form-check-input" id="parcking" name="parcking">
+                                    <label class="form-check-label" for="parcking">Parcking</label>
+                                </div>
+                                <div class="mb-3 form-control">
+                                    <label for="minimumVoteHotel" class="form-label">Minimum rating</label>
+                                    <input type="number" min="1" max="5" class="form-control" id="minimumVoteHotel" aria-describedby="minimumVoteHotel" name="minimumVoteHotel">
                                 </div>
                             </div>
-                            <div class="col-8">
-                                <div class="mb-3">
-                                    <label for="voteHotel" class="form-label">Minimum rating</label>
-                                    <input type="email" class="form-control" id="voteHotel" aria-describedby="emailHelp">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary">Search</button>
-                            </div>
+                            <button type="submit" class="btn btn-primary">Search</button>
+                            
                         </div>
                     </form>
-                </div>
-            </div>
-           
-        </div>     
+        </div>   
+
         <!-- List Hotel -->
-        <div id="list-hotel" class="container">
-            <?php
-                $i = 0;
-                $hotels = [
-
-                    [
-                        'name' => 'Hotel Belvedere',
-                        'description' => 'Hotel Belvedere Descrizione',
-                        'parking' => true,
-                        'vote' => 4,
-                        'distance_to_center' => 10.4
-                    ],
-                    [
-                        'name' => 'Hotel Futuro',
-                        'description' => 'Hotel Futuro Descrizione',
-                        'parking' => true,
-                        'vote' => 2,
-                        'distance_to_center' => 2
-                    ],
-                    [
-                        'name' => 'Hotel Rivamare',
-                        'description' => 'Hotel Rivamare Descrizione',
-                        'parking' => false,
-                        'vote' => 1,
-                        'distance_to_center' => 1
-                    ],
-                    [
-                        'name' => 'Hotel Bellavista',
-                        'description' => 'Hotel Bellavista Descrizione',
-                        'parking' => false,
-                        'vote' => 5,
-                        'distance_to_center' => 5.5
-                    ],
-                    [
-                        'name' => 'Hotel Milano',
-                        'description' => 'Hotel Milano Descrizione',
-                        'parking' => true,
-                        'vote' => 2,
-                        'distance_to_center' => 50
-                    ],
-
-                ];
-                ?>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Parcking</th>
-                            <th scope="col">Vote</th>
-                            <th scope="col">Distance to center</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
+        <div id="list-hotel" class="container-fluid">
+            
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Parcking</th>
+                        <th scope="col">Vote</th>
+                        <th scope="col">Distance to center</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
                         foreach ($hotels as $hotel){
                             $i++;
-                            ?>
-                            <tr>
-                                <th scope="row"><?php echo $i  ?></th>
-                                <?php
-                                foreach ($hotel as $key => $value){
-                                
-                                echo "<td> $value </td>"; 
+                            // controlliamo se l'utente ha richiesto il parcheggio
+                            // mostriamo solo gli hotel con il parcheggio
 
+                            if($parcking_requested){
+                                // controlliamo se l'hotel dell'iterazione non ha i parcheggi
+                                if(!$hotel["parking"]){
+                                    // saltiamo solo l'iterazione corrente del ciclo 
+                                    // diverso da break che ti fa uscire dal ciclo
+                                    continue;
+                                }
+                            };
+                            
+                            if ($hotel["vote"] < $minimun_vote){
+                                // controlliamo anche che il voto minimo non sia inferiore a quello dell'hotel dell'iterazione
+                                continue;
+                            } 
+
+                            ?>
+                            <!-- First correction
+                                <tr>
+                                    <th scope="row"><?php echo $i  ?></th>
+                                    <?php
+                                foreach ($hotel as $key => $value){
+                                    
+                                    echo "<td> $value </td>"; 
+                                    
                                 }
                                 ?>
                             </tr>
+                            -->
+                            <tr>
+                                <th scope="row"><?php echo $i  ?></th>
+                                <td><?php echo $hotel["name"] ?></td>
+                                <td><?php echo $hotel["description"] ?></td>
+                                <td>
+                                    <!-- Output migliore per parcking con il ternario-->
+                                    <?php 
+                                        echo $hotel["parking"] ? "Presente" : "Assente"
+                                    ?>
+                                </td>
+                                <td><?php echo $hotel["vote"] ?></td>
+                                <td><?php echo $hotel["distance_to_center"] ?></td>
+                            </tr>    
                         <?php    
                         };
                         ?>
-                    </tbody>
+                </tbody>
             </table> 
         </div>
     </main>
